@@ -16,4 +16,4 @@ app.use("/todo", todo_1.default);
 app.use((err, req, res, next) => {
     res.status(500).json({ message: err.message });
 });
-mongoose_1.default.connect('mongodb://127.o.o.1:27017/todos');
+mongoose_1.default.connect('mongodb://127.0.0.1:27017/todos');

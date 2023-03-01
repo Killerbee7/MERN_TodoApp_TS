@@ -17,4 +17,4 @@ app.use((err:Error, req:Request, res:Response, next:NextFunction) => {
     res.status(500).json({message: err.message})
 })
 
-db.connect('mongodb://127.o.o.1:27017/todos')
+db.connect('mongodb://127.0.0.1:27017/todos')
