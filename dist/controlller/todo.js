@@ -1,17 +1,32 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTodos = exports.updateTodos = exports.getTodos = exports.createTodo = void 0;
-const todo_1 = require("../models/todo");
-const TODOS = [];
+const todo_1 = __importDefault(require("../models/todo"));
+// const TODOS: Todo[] = [];
 const createTodo = (req, res, next) => {
-    const text = req.body.text;
-    const newTodo = new todo_1.Todo(Math.random().toString(), text);
-    TODOS.push(newTodo);
-    res.status(201).json({ message: "Create the todo", createTodo: newTodo });
+    try {
+        const data = req.body;
+        console.log("Data", data);
+        let todos = await todo_1.default.create(data);
+        return res.status(200).json({ message: "todo created successfully", data: todos });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "error.message" });
+    }
 };
 exports.createTodo = createTodo;
-const getTodos = (req, res, next) => {
-    res.json({ todos: TODOS });
+const getTodos = async (req, res, next) => {
+    try {
+        let todos = await todo_1.default.find({});
+        return res.status(200).json({ message: "All todos", data: todos });
+        res.json({ todos: TODOS });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "error.message" });
+    }
 };
 exports.getTodos = getTodos;
 const updateTodos = (req, res, next) => {
@@ -21,7 +36,7 @@ const updateTodos = (req, res, next) => {
     if (todoIndex < 0) {
         throw new Error("Could not find todo");
     }
-    TODOS[todoIndex] = new todo_1.Todo(TODOS[todoIndex].id, updatedText);
+    TODOS[todoIndex] = new todo_1.default(TODOS[todoIndex].id, updatedText);
     res.json({ message: "Updated", updateTodos: TODOS[todoIndex] });
 };
 exports.updateTodos = updateTodos;

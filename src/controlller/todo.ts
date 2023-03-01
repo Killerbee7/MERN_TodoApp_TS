@@ -1,21 +1,35 @@
 import { RequestHandler,  } from "express";
 
-import {Todo} from '../models/todo'
+import Todo, {TodoModel} from '../models/todo'
 
-const TODOS: Todo[] = [];
+// const TODOS: Todo[] = [];
 
 export const createTodo:RequestHandler =( req, res, next) => {
 
-const text= (req.body as {text:string}).text;
+try {
+    const data: TodoModel = req.body;
+    console.log("Data", data);
+    let todos = await Todo.create(data);
+    return res.status(200).json({message: "todo created successfully", data: todos})
+    
+    
+} catch (error: any) {
+    return  res.status(500).json({message: "error.message"})
+}
 
-const newTodo= new Todo(Math.random().toString(), text);
-TODOS.push(newTodo);
-res.status(201).json({message: "Create the todo", createTodo:newTodo})
 }
 
 
-export const getTodos: RequestHandler= ( req, res, next)=> {
-    res.json({todos: TODOS})
+export const getTodos: RequestHandler= async ( req, res, next)=> {
+
+    try {
+        let todos = await Todo.find({})
+        return res.status(200).json({message: "All todos", data: todos})
+        res.json({todos: TODOS})
+    } catch (error: any) {
+        return  res.status(500).json({message: "error.message"})
+    }
+    
 }
 
 
